@@ -1,0 +1,91 @@
+{% extends "projects/base.html" %}
+{% block content %}
+
+<style>
+.profile-container{
+    max-width:800px;
+    margin:40px auto;
+    background:white;
+    border-radius:15px;
+    padding:40px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.profile-header{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.profile-avatar{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.profile-placeholder{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    background:#777;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-weight:bold;
+    color:white;
+}
+
+.profile-info h2{
+    margin:0;
+}
+
+.profile-info p{
+    color:gray;
+}
+
+.edit-btn{
+    margin-top:20px;
+    display:inline-block;
+    padding:10px 20px;
+    background:#1abc9c;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.edit-btn:hover{
+    background:#16a085;
+}
+</style>
+
+<div class="profile-container">
+
+    <div class="profile-header">
+
+        {% if request.user.avatar %}
+            <img src="{{ request.user.avatar.url }}" class="profile-avatar">
+        {% else %}
+            <div class="profile-placeholder">
+                {{ request.user.username|first|upper }}
+            </div>
+        {% endif %}
+
+        <div class="profile-info">
+            <h2>{{ request.user.username }}</h2>
+            <p>{{ request.user.email }}</p>
+            <p>{{ request.user.bio }}</p>
+
+            <a href="{% url 'edit_profile' %}" class="edit-btn">
+                Редагувати профіль
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

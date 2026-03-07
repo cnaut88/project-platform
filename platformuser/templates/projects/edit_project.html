@@ -1,0 +1,25 @@
+{% extends "projects/base.html" %}
+
+{% block content %}
+
+<h2>Редагування проекту</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <input type="text" name="title" value="{{ project.title }}"><br><br>
+
+    <textarea name="description">{{ project.descriphion }}</textarea><br><br>
+
+    <select name="status">
+        <option value="idea" {% if project.status == "idea" %}selected{% endif %}>Idea</option>
+        <option value="in_progress" {% if project.status == "in_progress" %}selected{% endif %}>In Progress</option>
+        <option value="mvp" {% if project.status == "mvp" %}selected{% endif %}>MVP</option>
+    </select><br><br>
+
+    <input type="text" name="git_url" value="{{ project.git_url }}"><br><br>
+
+    <button type="submit">Зберегти</button>
+</form>
+
+{% endblock %}

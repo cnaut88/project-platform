@@ -1,0 +1,81 @@
+{% extends "projects/base.html" %}
+{% block content %}
+
+<style>
+.edit-container{
+    max-width:600px;
+    margin:40px auto;
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.edit-container h2{
+    margin-bottom:25px;
+}
+
+.edit-container input,
+.edit-container textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+.edit-container input:focus,
+.edit-container textarea:focus{
+    outline:none;
+    border-color:#1abc9c;
+}
+
+.save-btn{
+    padding:10px 20px;
+    background:#1abc9c;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.save-btn:hover{
+    background:#16a085;
+}
+
+.cancel-btn{
+    margin-left:15px;
+    color:gray;
+    text-decoration:none;
+}
+</style>
+
+<div class="edit-container">
+
+<h2>Редагування профілю</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Username</label>
+    {{ form.username }}
+
+    <label>Email</label>
+    {{ form.email }}
+
+    <label>Bio</label>
+    {{ form.bio }}
+
+    <label>Avatar</label>
+    {{ form.avatar }}
+
+    <button type="submit" class="save-btn">Зберегти</button>
+    <a href="{% url 'profile' %}" class="cancel-btn">Скасувати</a>
+
+</form>
+
+</div>
+
+{% endblock %}

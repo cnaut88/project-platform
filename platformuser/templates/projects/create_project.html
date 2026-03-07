@@ -1,0 +1,78 @@
+{% extends "projects/base.html" %}
+{% block content %}
+
+<style>
+
+.create-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #181818;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+.create-container input,
+.create-container textarea,
+.create-container select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    background: #2a2a2a;
+    color: white;
+}
+
+.create-container input:focus,
+.create-container textarea:focus {
+    outline: 2px solid #1abc9c;
+}
+
+.submit-btn {
+    padding: 12px 20px;
+    background: #1abc9c;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #16a085;
+}
+
+</style>
+
+<div class="create-container">
+
+<h2>Створити проект</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="text" name="title" placeholder="Назва" required>
+    
+    <textarea name="description" placeholder="Опис проекту" required></textarea>
+
+    <select name="status">
+        <option value="idea">Idea</option>
+        <option value="in_progress">In Progress</option>
+        <option value="mvp">MVP</option>
+    </select>
+
+    <input type="url" name="git_url" placeholder="Посилання на GitHub">
+
+    <label>Зображення проекту</label>
+    <input type="file" name="image">
+
+    <label>Файл проекту</label>
+    <input type="file" name="file">
+
+    <button type="submit" class="submit-btn">Опублікувати</button>
+
+</form>
+
+</div>
+
+{% endblock %}

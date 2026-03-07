@@ -1,0 +1,228 @@
+{% extends "projects/base.html" %}
+{% block content %}
+
+<style>
+
+.video-container {
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+.video-preview {
+    width: 100%;
+    height: 450px;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.video-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 15px 0;
+}
+
+.video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 15px;
+}
+
+.author-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.author-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.subscribe-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    background: red;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.subscribed {
+    background: #444;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.like-btn {
+    background: #2a2a2a;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.description-box {
+    background: #1f1f1f;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.comments-section {
+    margin-top: 30px;
+}
+
+.comment {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.comment-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #555;
+}
+
+.comment-body {
+    background: #1f1f1f;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+}
+.project-thumbnail-wrapper{
+    position:relative;
+}
+
+.play-arrow{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    font-size:60px;
+    color:white;
+    opacity:0.8;
+    transition:0.2s;
+}
+
+.project-thumbnail-wrapper:hover .play-arrow{
+    transform:translate(-50%, -50%) scale(1.2);
+    opacity:1;
+}
+</style>
+{% if project.video_url %}
+<div class="video-preview">
+
+    <iframe width="100%" height="450"
+        src="https://www.youtube.com/embed/{{ project.video_url|cut:'https://www.youtube.com/watch?v=' }}"
+        frameborder="0"
+        allowfullscreen>
+    </iframe>
+
+</div>
+{% endif %}
+<div class="video-container">
+
+    <div class="video-preview">
+        {% if project.image %}
+            <img src="{{ project.image.url }}">
+        {% endif %}
+    </div>
+
+    <div class="video-title">
+        {{ project.title }}
+    </div>
+
+    <div class="video-meta">
+
+        <div class="author-box">
+            <a href="{% url 'user_profile' project.owner.id %}">
+                {% if project.owner.avatar %}
+                    <img src="{{ project.owner.avatar.url }}" class="author-avatar">
+                {% else %}
+                    <div class="author-avatar"></div>
+                {% endif %}
+            </a>
+
+            <div>
+                <a href="{% url 'user_profile' project.owner.id %}" style="color:white;text-decoration:none;">
+                    <strong>{{ project.owner.username }}</strong>
+                </a><br>
+                {{ project.owner.subscribers.count }} підписників
+            </div>
+
+            {% if user != project.owner %}
+                <form method="post" action="{% url 'subscribe_user' project.owner.id %}">
+                    {% csrf_token %}
+                    <button class="subscribe-btn">
+                    🔔 Підписатись
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+        <form method="post" action="{% url 'like_project' project.id %}">
+            {% csrf_token %}
+            <button class="like-btn">
+            👍 {{ project.likes.count }}
+            </button>
+        </form>
+
+    </div>
+
+    <div class="description-box">
+        {{ project.descriphion }}
+        {% if project.git_url %}
+            <br><br>
+            🔗 <a href="{{ project.git_url }}" target="_blank">GitHub</a>
+        {% endif %}
+    </div>
+
+
+    <div class="comments-section">
+        <h3>Коментарі ({{ comments.count }})</h3>
+
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'add_comment' project.id %}">
+            {% csrf_token %}
+            <textarea name="text" placeholder="Написати коментар..." required
+                style="width:100%;padding:10px;border-radius:10px;background:#1f1f1f;color:white;border:none;">
+            </textarea>
+            <button style="margin-top:10px;padding:8px 15px;background:red;border:none;color:white;border-radius:8px;">
+                Надіслати
+            </button>
+        </form>
+        {% endif %}
+
+        <br>
+
+        {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-avatar"></div>
+            <div class="comment-body">
+                <strong>{{ comment.author.username }}</strong><br>
+                {{ comment.text }}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

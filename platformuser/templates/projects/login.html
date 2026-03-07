@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Auth</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#1f1f1f,#2c2c2c);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+
+.auth-box{
+    background:#111;
+    padding:40px;
+    border-radius:15px;
+    width:380px;
+    box-shadow:0 0 30px rgba(0,0,0,0.6);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:8px;
+    background:#1f1f1f;
+    color:white;
+}
+
+input:focus{
+    outline:none;
+    background:#2a2a2a;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#ff004f;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#ff2f6d;
+}
+
+.switch{
+    text-align:center;
+    margin-top:15px;
+    cursor:pointer;
+    color:#aaa;
+}
+
+.switch:hover{
+    color:white;
+}
+
+.hidden{
+    display:none;
+}
+
+.error{
+    background:#ff4444;
+    padding:8px;
+    border-radius:6px;
+    margin-bottom:10px;
+    text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="auth-box">
+<div id="loginForm">
+<h2>Вхід</h2>
+
+{% if login_error %}
+<div class="error">{{ login_error }}</div>
+{% endif %}
+
+<form method="POST">
+{% csrf_token %}
+<input type="text" name="login" placeholder="Email або Username" required>
+<input type="password" name="password" placeholder="Пароль" required>
+<button type="submit" name="login_submit">Увійти</button>
+</form>
+
+<div class="switch" onclick="showRegister()">Немає акаунту? Зареєструватись</div>
+</div>
+
+
+
+<div id="registerForm" class="hidden">
+<h2>Реєстрація</h2>
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="text" name="username" placeholder="Username" required>
+<input type="email" name="email" placeholder="Email" required>
+<input type="file" name="avatar">
+<input type="password" name="password1" placeholder="Пароль" required>
+<input type="password" name="password2" placeholder="Повторіть пароль" required>
+
+<button type="submit" name="register_submit">Створити акаунт</button>
+</form>
+
+<div class="switch" onclick="showLogin()">Вже є акаунт? Увійти</div>
+</div>
+</div>
+<script>
+function showRegister(){
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("registerForm").classList.remove("hidden");
+}
+function showLogin(){
+    document.getElementById("registerForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
+
+
