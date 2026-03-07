@@ -14,4 +14,4 @@ COPY . /app/
 
 EXPOSE 8080
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080","Social_system.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080","platformproject.wsgi:application"]
