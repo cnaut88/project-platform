@@ -138,12 +138,12 @@ def edit_project(request, project_id):
 def auth_view(request):
     if request.method == "POST":
         if "login_submit" in request.POST:
-            login_input = request.POST.get("login")
-            password = request.POST.get("password")
+            login_input = request.POST.get("login", "")
+            password = request.POST.get("password", "")
 
             user = authenticate(request, username=login_input, password=password)
 
-            if user is None:
+            if not user:
                 try:
                     user_obj = User.objects.get(email=login_input)
                     user = authenticate(request, username=user_obj.username, password=password)
