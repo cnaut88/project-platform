@@ -25,3 +25,4 @@ if __name__ == '__main__':
 #python manage.py runserver 0.0.0.0:8000
 #ipconfig
 #c:\Users\Stas\OneDrive\Desktop\project_platform\project-platform\venv\Scripts\Activate.ps1
+#cd project-platform; .\venv\Scripts\Activate.ps1; python manage.py runserver

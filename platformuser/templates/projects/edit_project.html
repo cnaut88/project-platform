@@ -1,25 +1,147 @@
 {% extends "projects/base.html" %}
-
 {% block content %}
 
-<h2>Редагування проекту</h2>
+<style>
+    :root {
+        --bg-dark: #0f0f0f;
+        --card-bg: #1f1f1f;
+        --accent-blue: #3ea6ff;
+        --text-main: #f1f1f1;
+        --text-dim: #aaaaaa;
+        --border-color: #3f3f3f;
+    }
 
-<form method="post">
-    {% csrf_token %}
+    .edit-project-container {
+        max-width: 650px;
+        margin: 50px auto;
+        background: var(--card-bg);
+        padding: 40px;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
 
-    <input type="text" name="title" value="{{ project.title }}"><br><br>
+    .edit-project-container h2 {
+        margin-bottom: 30px;
+        font-size: 26px;
+        font-weight: 700;
+        text-align: center;
+    }
 
-    <textarea name="description">{{ project.descriphion }}</textarea><br><br>
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-    <select name="status">
-        <option value="idea" {% if project.status == "idea" %}selected{% endif %}>Idea</option>
-        <option value="in_progress" {% if project.status == "in_progress" %}selected{% endif %}>In Progress</option>
-        <option value="mvp" {% if project.status == "mvp" %}selected{% endif %}>MVP</option>
-    </select><br><br>
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: var(--text-dim);
+        font-weight: 600;
+    }
 
-    <input type="text" name="git_url" value="{{ project.git_url }}"><br><br>
+    
+    .edit-project-container input[type="text"],
+    .edit-project-container textarea,
+    .edit-project-container select {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: white;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s;
+        box-sizing: border-box;
+    }
 
-    <button type="submit">Зберегти</button>
-</form>
+    .edit-project-container input:focus,
+    .edit-project-container textarea:focus,
+    .edit-project-container select:focus {
+        border-color: var(--accent-blue);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .edit-project-container textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    
+    .edit-project-container select option {
+        background: var(--card-bg);
+        color: white;
+    }
+
+    
+    .btn-save {
+        width: 100%;
+        padding: 14px;
+        background: var(--accent-blue);
+        color: #000;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.3s;
+    }
+
+    .btn-save:hover {
+        background: #65b8ff;
+        transform: translateY(-2px);
+    }
+
+    .cancel-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .cancel-link:hover {
+        color: white;
+    }
+</style>
+
+<div class="edit-project-container">
+    <h2>📝 Редагування проекту</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Назва проекту</label>
+            <input type="text" name="title" value="{{ project.title }}" placeholder="Введіть назву..." required>
+        </div>
+
+        <div class="form-group">
+            <label>Опис</label>
+            <textarea name="description" placeholder="Розкажіть про проект...">{{ project.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Статус розробки</label>
+            <select name="status">
+                <option value="idea" {% if project.status == "idea" %}selected{% endif %}>💡 Ідея</option>
+                <option value="in_progress" {% if project.status == "in_progress" %}selected{% endif %}>🚀 У процесі</option>
+                <option value="mvp" {% if project.status == "mvp" %}selected{% endif %}>💎 MVP</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Посилання на GitHub</label>
+            <input type="text" name="git_url" value="{{ project.git_url }}" placeholder="https://github.com...">
+        </div>
+
+        <button type="submit" class="btn-save">Зберегти зміни</button>
+        <a href="{% url 'project_detail' project.id %}" class="cancel-link">Скасувати та повернутися</a>
+    </form>
+</div>
 
 {% endblock %}
+

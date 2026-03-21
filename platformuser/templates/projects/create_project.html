@@ -3,76 +3,181 @@
 
 <style>
 
-.create-container {
-    max-width: 700px;
-    margin: 40px auto;
-    background: #181818;
-    padding: 30px;
-    border-radius: 15px;
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.create-container input,
+@keyframes inputFocus {
+    from { box-shadow: 0 0 0 0 rgba(26, 188, 156, 0); }
+    to { box-shadow: 0 0 0 4px rgba(26, 188, 156, 0.2); }
+}
+
+.create-container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: #1c1f26;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    animation: slideUpFade 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.create-container h2 {
+    font-weight: 800;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #ffffff;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+.form-group {
+    margin-bottom: 22px;
+    opacity: 0;
+    animation: slideUpFade 0.5s ease forwards;
+}
+
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+.form-group:nth-child(5) { animation-delay: 0.5s; }
+.form-group:nth-child(6) { animation-delay: 0.6s; }
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    transition: color 0.3s;
+}
+
+
+.create-container input[type="text"],
+.create-container input[type="url"],
 .create-container textarea,
 .create-container select {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: none;
-    background: #2a2a2a;
-    color: white;
+    padding: 15px;
+    background: #252a34;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
+
 
 .create-container input:focus,
-.create-container textarea:focus {
-    outline: 2px solid #1abc9c;
+.create-container textarea:focus,
+.create-container select:focus {
+    outline: none;
+    border-color: #1abc9c;
+    background: #2d333f;
+    animation: inputFocus 0.4s forwards;
+    transform: translateY(-1px);
 }
 
+.create-container input:focus + label, 
+.form-group:focus-within label {
+    color: #1abc9c;
+}
+
+
+.create-container select option {
+    background: #1c1f26;
+    color: #ffffff;
+}
+
+
 .submit-btn {
-    padding: 12px 20px;
+    width: 100%;
+    margin-top: 15px;
+    padding: 16px;
     background: #1abc9c;
     border: none;
-    border-radius: 8px;
+    border-radius: 14px;
     color: white;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 16px;
     cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    animation: slideUpFade 0.5s ease forwards 0.7s;
 }
 
 .submit-btn:hover {
     background: #16a085;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(26, 188, 156, 0.3);
 }
 
+.submit-btn:active {
+    transform: translateY(-1px) scale(1);
+}
+
+
+.file-input {
+    background: rgba(26, 188, 156, 0.03) !important;
+    border: 2px dashed rgba(255, 255, 255, 0.1) !important;
+    padding: 20px !important;
+    text-align: center;
+}
+
+.file-input:hover {
+    border-color: #1abc9c !important;
+    background: rgba(26, 188, 156, 0.08) !important;
+}
 </style>
 
 <div class="create-container">
+    <h2>Новий проект</h2>
 
-<h2>Створити проект</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="title" placeholder="Введіть назву проекту" required>
+        </div>
+        
+        <div class="form-group">
+            <textarea name="description" placeholder="Про що ваш проект?" required></textarea>
+        </div>
 
-    <input type="text" name="title" placeholder="Назва" required>
-    
-    <textarea name="description" placeholder="Опис проекту" required></textarea>
+        <div class="form-group">
+            <label>Статус проекту</label>
+            <select name="status">
+                <option value="idea">💡 Тільки ідея</option>
+                <option value="in_progress">🛠 В розробці</option>
+                <option value="mvp">🚀 MVP готовий</option>
+            </select>
+        </div>
 
-    <select name="status">
-        <option value="idea">Idea</option>
-        <option value="in_progress">In Progress</option>
-        <option value="mvp">MVP</option>
-    </select>
+        <div class="form-group">
+            <input type="url" name="git_url" placeholder="GitHub посилання (опціонально)">
+        </div>
 
-    <input type="url" name="git_url" placeholder="Посилання на GitHub">
+        <div class="form-group">
+            <label>Обкладинка проекту</label>
+            <input type="file" name="image" class="file-input" accept="image/*">
+        </div>
 
-    <label>Зображення проекту</label>
-    <input type="file" name="image">
+        <div class="form-group">
+            <label>Додати архів/файли</label>
+            <input type="file" name="file" class="file-input">
+        </div>
 
-    <label>Файл проекту</label>
-    <input type="file" name="file">
-
-    <button type="submit" class="submit-btn">Опублікувати</button>
-
-</form>
-
+        <button type="submit" class="submit-btn">Опублікувати на Platform</button>
+    </form>
 </div>
 
 {% endblock %}
+
+
+

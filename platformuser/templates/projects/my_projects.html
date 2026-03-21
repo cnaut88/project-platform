@@ -1,15 +1,162 @@
 {% extends "projects/base.html" %}
-
 {% block content %}
 
-<h2>Мої проекти</h2>
+<style>
+    :root {
+        --bg-dark: #0f0f0f;
+        --card-bg: #1f1f1f;
+        --accent-blue: #3ea6ff;
+        --text-main: #f1f1f1;
+        --text-dim: #aaaaaa;
+        --border-color: #3f3f3f;
+    }
 
-{% for project in projects %}
-    <div>
-        <a href="{% url 'project_details' project.id %}">
-            {{ project.title }}
-        </a>
-    </div>
-{% endfor %}
+    body {
+        background: var(--bg-dark);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .projects-header {
+        max-width: 1200px;
+        margin: 40px auto 20px;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .projects-header h2 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto 50px;
+        padding: 0 20px;
+    }
+
+    .project-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .project-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--accent-blue);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    
+    .project-thumbnail {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: linear-gradient(45deg, #2c2c2c, #1a1a1a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+    }
+
+    .project-info {
+        padding: 20px;
+    }
+
+    .project-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: block;
+        color: var(--text-main);
+    }
+
+    .project-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.05);
+        color: var(--text-dim);
+        border: 1px solid var(--border-color);
+    }
+
+    
+    .status-idea { color: #ffca28; border-color: #ffca28; }
+    .status-in_progress { color: #3ea6ff; border-color: #3ea6ff; }
+    .status-mvp { color: #4caf50; border-color: #4caf50; }
+
+    .add-project-btn {
+        background: var(--accent-blue);
+        color: #000;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    .add-project-btn:hover {
+        background: #65b8ff;
+    }
+</style>
+
+<div class="projects-header">
+    <h2>📂 Мої проекти</h2>
+    <a href="#" class="add-project-btn">+ Створити</a>
+</div>
+
+<div class="projects-grid">
+    {% for project in projects %}
+    <a href="{% url 'project_details' project.id %}" class="project-card">
+        
+        <div class="project-thumbnail">
+            {% if project.image %}
+                <img src="{{ project.image.url }}" style="width:100%; height:100%; object-fit:cover;">
+            {% else %}
+                🚀
+            {% endif %}
+        </div>
+
+        <div class="project-info">
+            <span class="project-status 
+                {% if project.status == 'idea' %}status-idea
+                {% elif project.status == 'in_progress' %}status-in_progress
+                {% elif project.status == 'mvp' %}status-mvp{% endif %}">
+                
+                {% if project.status == 'idea' %}💡 Ідея
+                {% elif project.status == 'in_progress' %}🚀 В процесі
+                {% elif project.status == 'mvp' %}💎 MVP
+                {% else %}{{ project.status }}{% endif %}
+            </span>
+            
+            <span class="project-title">{{ project.title }}</span>
+            
+            <p style="font-size: 13px; color: var(--text-dim); margin-top: 8px;">
+                {{ project.description|truncatechars:80 }}
+            </p>
+        </div>
+    </a>
+    {% empty %}
+    <p style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 50px;">
+        У вас ще немає створених проектів.
+    </p>
+    {% endfor %}
+</div>
 
 {% endblock %}
+

@@ -73,7 +73,7 @@ def subscribe_project(request, project_id):
         project = Project.objects.get(pk=project_id)
     except Project.DoesNotExist:
         return redirect("show_projects")
-    Subscription.objects.get_or_create(user=request.user,project=project)
+    Subscription.objects.get_or_create(subscriber=request.user,author=project.owner)
     return redirect("project_details", project_id=project.id)
 
 
@@ -137,38 +137,46 @@ def edit_project(request, project_id):
 
 def auth_view(request):
     if request.method == "POST":
-        if "login_submit" in request.POST:
-            login_input = request.POST.get("login", "")
-            password = request.POST.get("password", "")
 
+        
+        if "login_submit" in request.POST:
+            login_input = request.POST.get("login")
+            password = request.POST.get("password")
+
+            user = None
+
+            
             user = authenticate(request, username=login_input, password=password)
 
+            
             if not user:
                 try:
                     user_obj = User.objects.get(email=login_input)
                     user = authenticate(request, username=user_obj.username, password=password)
                 except User.DoesNotExist:
-                    user = None
+                    pass
 
             if user:
                 login(request, user)
                 return redirect("show_projects")
-            else:
-                return render(request, "projects/login.html", {
-                    "login_error": "Невірний логін або пароль"
-                })
+
+            return render(request, "projects/login.html", {
+                "login_error": "Невірний логін або пароль",
+                "register_form": RegisterForm()
+            })
 
         
         if "register_submit" in request.POST:
             form = RegisterForm(request.POST, request.FILES)
+
             if form.is_valid():
                 user = form.save()
                 login(request, user)
                 return redirect("show_projects")
-            else:
-                return render(request, "projects/login.html", {
-                    "register_form": form
-                })
+
+            return render(request, "projects/login.html", {
+                "register_form": form
+            })
 
     return render(request, "projects/login.html", {
         "register_form": RegisterForm()
