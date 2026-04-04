@@ -1,0 +1,42 @@
+{% extends "projects/base.html" %}
+{% block content %}
+
+<h2 style="margin-bottom:20px;">Стрічка підписок</h2>
+
+<div class="projects-grid">
+
+{% for project in projects %}
+<a href="{% url 'project_details' project.id %}" style="text-decoration:none;">
+
+    <div class="project-card">
+
+        {% if project.image %}
+            <img src="{{ project.image.url }}" class="project-thumbnail">
+        {% else %}
+            <div class="project-thumbnail"></div>
+        {% endif %}
+
+        <div class="project-content">
+            <div class="project-title">{{ project.title }}</div>
+
+            <div class="project-meta">
+                {{ project.owner.username }} • {{ project.created_a }}
+            </div>
+
+            <div class="status-badge">
+                {{ project.get_status_display }}
+            </div>
+        </div>
+
+    </div>
+
+</a>
+{% empty %}
+<p style="text-align:center; color:#aaa;">
+    У вас поки немає підписок або там немає проектів
+</p>
+{% endfor %}
+
+</div>
+
+{% endblock %}

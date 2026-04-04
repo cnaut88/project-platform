@@ -39,6 +39,7 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"),
     path("profile/", views.profile_view, name="profile"),
     path("profile/edit/", views.edit_profile, name="edit_profile"),
+    path("feed/", views.feed, name="feed"),
 ]
 
 

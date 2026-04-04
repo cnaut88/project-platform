@@ -22,7 +22,21 @@ def project_details(request, project_id):
     
     return render(request, "projects/detail.html", {"project": project,"comments": comments})
 
+@login_required
+def feed(request):
+    # отримуємо всіх авторів, на яких підписаний юзер
+    subscriptions = Subscription.objects.filter(
+        subscriber=request.user
+    ).values_list("author", flat=True)
 
+    # беремо їх проекти
+    projects = Project.objects.filter(
+        owner__in=subscriptions
+    ).order_by("-created_a")
+
+    return render(request, "projects/feed.html", {
+        "projects": projects
+    })
 @login_required
 def create_project(request):
     if request.method == "POST":
@@ -34,7 +48,7 @@ def create_project(request):
         file = request.FILES.get("file")
         if not title or not description:
             return HttpResponse("Заповніть всі поля")
-        Project.objects.create(owner=request.user,title=title,descriphion=description,status=status,git_url=git_url,image=image,file=file)
+        Project.objects.create(owner=request.user,title=title,description=description,status=status,git_url=git_url,image=image,file=file)
         return redirect("show_projects")
     return render(request, "projects/create_project.html")
 
@@ -79,7 +93,13 @@ def subscribe_project(request, project_id):
 
 @login_required
 def unsubscribe_project(request, project_id):
-    Subscription.objects.filter(user=request.user,project_id=project_id).delete()
+    project = Project.objects.get(pk=project_id)
+
+    Subscription.objects.filter(
+        subscriber=request.user,
+        author=project.owner
+    ).delete()
+
     return redirect("project_details", project_id=project_id)
 @login_required
 def subscribe_user(request, user_id):
@@ -128,7 +148,7 @@ def edit_project(request, project_id):
             return HttpResponse("Заповніть всі поля")
 
         project.title = title
-        project.descriphion = description
+        project.description = description
         project.status = status
         project.git_url = git_url
         project.save()
@@ -187,7 +207,11 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, "projects/profile.html")
+    projects = request.user.projects.all()
+
+    return render(request, "projects/profile.html", {
+        "projects": projects
+    })
 
 @login_required
 def edit_profile(request):

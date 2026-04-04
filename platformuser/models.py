@@ -17,7 +17,7 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-    
+
 class ProjectCategory(models.Model):
     name = models.CharField(max_length=100)
 
@@ -39,7 +39,7 @@ class Project(models.Model):
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="projects")
     title = models.CharField(max_length=200)
-    descriphion = models.TextField()
+    description = models.TextField()
     status = models.CharField(max_length=20,choices=STATUS_CHOICES,default="idea")
     git_url = models.URLField(blank=True)
     image = models.ImageField(upload_to="projects/images/", blank=True, null=True)

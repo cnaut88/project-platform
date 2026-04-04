@@ -199,6 +199,7 @@ header {
                 <a class="toggle-btn {% if request.resolver_match.url_name == 'show_projects' %}active{% endif %}" href="{% url 'show_projects' %}">Всі проекти</a>
                 <a class="toggle-btn {% if request.resolver_match.url_name == 'create_project' %}active{% endif %}" href="{% url 'create_project' %}">Створити</a>
                 <a class="toggle-btn {% if request.resolver_match.url_name == 'my_projects' %}active{% endif %}" href="{% url 'my_projects' %}">Мої проекти</a>
+                <a class="toggle-btn {% if request.resolver_match.url_name == 'feed' %}active{% endif %}" href="{% url 'feed' %}"> Підписки</a>
             </nav>
         </div>
 
